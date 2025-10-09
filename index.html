@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sub-Link Output — ویـ۲ری</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <h1 class="logo">Sub-Link Output</h1>
+      <div class="controls">
+        <input id="q" placeholder="جستجو (کشور، پروتکل، نام)" />
+        <select id="filter-proto">
+          <option value="">همه پروتکل‌ها</option>
+          <option value="vmess">vmess</option>
+          <option value="vless">vless</option>
+          <option value="trojan">trojan</option>
+          <option value="shadowsocks">ss</option>
+          <option value="wireguard">wireguard</option>
+        </select>
+        <button id="reload">بارگذاری مجدد</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="summary" class="summary">در حال بارگذاری...</section>
+    <section id="cards" class="cards"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>منبع: <a id="repo-link" target="_blank" rel="noopener">v2rayCrow/Sub-Link-Output</a> — ساخته‌شده برای استفاده شخصی</small>
+    </div>
+  </footer>
+
+  <script>
+    // آدرس فایل‌های raw را اینجا تنظیم کن
+    const RAW_BASE = "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main";
+    const SUB_TXT = RAW_BASE + "/sub.txt";
+    const ALL_TXT = RAW_BASE + "/all.txt";
+  </script>
+  <script src="fetcher.js" defer></script>
+</body>
+</html>
