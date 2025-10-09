@@ -1,47 +1,46 @@
 <!doctype html>
+
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sub-Link Output — ویـ۲ری</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sub-Link Output — گروه‌بندی بر اساس کشور</title>
+<style>
+:root{--bg:#0b1220;--card:#0f1724;--muted:#9aa4b2;--accent:#4f46e5}
+body{margin:0;padding:20px;background:var(--bg);color:#e6eef8;font-family:system-ui,Arial}
+.container{max-width:1000px;margin:auto}
+header{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+header h1{margin:0;font-size:1.2rem}
+.links{display:flex;gap:12px;flex-wrap:wrap}
+.links a{color:#fff;text-decoration:none;background:var(--accent);padding:6px 10px;border-radius:8px}
+.card{background:var(--card);padding:14px;border-radius:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.card .info{display:flex;flex-direction:column}
+.card .info span{font-size:0.9rem;color:var(--muted)}
+.card button{background:var(--accent);color:#fff;border:none;padding:6px 12px;border-radius:8px;cursor:pointer}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container">
-      <h1 class="logo">Sub-Link Output</h1>
-      <div class="controls">
-        <input id="q" placeholder="جستجو (کشور، پروتکل، نام)" />
-        <select id="filter-proto">
-          <option value="">همه پروتکل‌ها</option>
-          <option value="vmess">vmess</option>
-          <option value="vless">vless</option>
-          <option value="trojan">trojan</option>
-          <option value="shadowsocks">ss</option>
-          <option value="wireguard">wireguard</option>
-        </select>
-        <button id="reload">بارگذاری مجدد</button>
-      </div>
-    </div>
-  </header>
+<div class="container">
+<header>
+<h1>Sub-Link Output — گروه‌بندی بر اساس کشور</h1>
+<div class="links">
+  <a href="https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt" target="_blank">sub.txt</a>
+  <a href="https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt" target="_blank">all.txt</a>
+</div>
+</header>
+<div id="cards"></div>
+</div>
+<script>
+const cardsEl = document.getElementById('cards');
+const RAW_COUNTRIES = 'https://api.github.com/repos/v2rayCrow/Sub-Link-Output/contents/countries';async function fetchCountries(){ const res = await fetch(RAW_COUNTRIES); const data = await res.json(); return data.filter(f=>f.name.endsWith('.txt')); }
 
-  <main class="container">
-    <section id="summary" class="summary">در حال بارگذاری...</section>
-    <section id="cards" class="cards"></section>
-  </main>
+async function countConfigs(url){ try{ const res = await fetch(url); const txt = await res.text(); const lines = txt.split(/\r?\n/).filter(l=>l.trim()!==""); return lines.length; }catch(e){return 0;} }
 
-  <footer class="footer">
-    <div class="container">
-      <small>منبع: <a id="repo-link" target="_blank" rel="noopener">v2rayCrow/Sub-Link-Output</a> — ساخته‌شده برای استفاده شخصی</small>
-    </div>
-  </footer>
+function createCard(name,count,rawUrl){ const div = document.createElement('div'); div.className='card'; div.innerHTML=<div class="info"> <strong>${name}</strong> <span>تعداد کانفیگ‌ها: ${count}</span> </div> <button onclick="navigator.clipboard.writeText('${rawUrl}')">کپی لینک</button>; return div; }
 
-  <script>
-    // آدرس فایل‌های raw را اینجا تنظیم کن
-    const RAW_BASE = "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main";
-    const SUB_TXT = RAW_BASE + "/sub.txt";
-    const ALL_TXT = RAW_BASE + "/all.txt";
-  </script>
-  <script src="fetcher.js" defer></script>
+async function init(){ const countries = await fetchCountries(); for(const c of countries){ const name = decodeURIComponent(c.name.replace('.txt','')); const rawUrl = c.download_url.replace('githubusercontent.com','raw.githubusercontent.com').replace('/refs/heads/main/','/main/'); const count = await countConfigs(rawUrl); cardsEl.appendChild(createCard(name,count,rawUrl)); } }
+
+init(); </script>
+
 </body>
 </html>
