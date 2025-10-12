@@ -1,56 +1,58 @@
 <!doctype html>
 
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sub-Link Output — کشورها و کانفیگ‌ها</title>
-<style>
-:root{--bg:#0b1220;--card:#0f1724;--muted:#9aa4b2;--accent:#4f46e5}
-body{margin:0;padding:20px;background:var(--bg);color:#e6eef8;font-family:system-ui,Arial}
-.container{max-width:1000px;margin:auto}
-header{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
-header h1{margin:0;font-size:1.2rem}
-.buttons{display:flex;gap:12px;flex-wrap:wrap}
-.buttons button{color:#fff;background:var(--accent);border:none;padding:8px 14px;border-radius:8px;cursor:pointer}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.card{background:var(--card);padding:14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-direction:column;gap:8px}
-.card .info{display:flex;flex-direction:column;align-items:center;gap:4px}
-.card .info span{font-size:0.9rem;color:var(--muted)}
-.card button{padding:6px 12px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>V2Ray Links</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-<header>
-<h1>Sub-Link Output — گروه‌بندی بر اساس کشور</h1>
-<div class="buttons">
-  <button id="copy-sub">کپی لینک sub.txt</button>
-  <button id="copy-all">کپی لینک all.txt</button>
-</div>
-</header>
-<div class="cards" id="cards"></div>
-</div>
-<script>
-const RAW_COUNTRIES = 'https://api.github.com/repos/v2rayCrow/Sub-Link-Output/contents/countries';
-const SUB_URL = 'https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt';
-const ALL_URL = 'https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt';function copyToClipboard(text){ navigator.clipboard.writeText(text).then(()=>alert('لینک کپی شد')); }
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="dot">V2</div>
+        <div>
+          <h1>V2Link — کوتاه و مرتب</h1>
+          <p class="lead">لینک‌های سابسکریپشن شما از GitHub — کلیک کن تا لینک کپی شود.</p>
+        </div>
+      </div>
+    </header><section class="top-actions">
+  <button id="btn-sub" class="btn" title="کپی لینک sub.txt">
+    <span>🌐 Sub</span>
+    <span class="kbd">کپی</span>
+  </button>
+  <button id="btn-all" class="btn" title="کپی لینک all.txt">
+    <span>📦 All</span>
+    <span class="kbd">کپی</span>
+  </button>
+  <div style="flex:1"></div>
+  <div style="color:var(--muted);font-size:13px">منبع: <span style="font-weight:600">v2rayCrow/Sub-Link-Output</span></div>
+</section>
 
-document.getElementById('copy-sub').addEventListener('click',()=>copyToClipboard(SUB_URL)); document.getElementById('copy-all').addEventListener('click',()=>copyToClipboard(ALL_URL));
+<section class="controls">
+  <div class="search">
+    <input id="q" type="text" placeholder="جستجو در کشورها یا فیلتر..." />
+  </div>
+  <div style="display:flex;gap:8px">
+    <button id="sort-alpha" class="btn">مرتب‌سازی الفبایی</button>
+    <button id="reload" class="btn">بارگذاری مجدد</button>
+  </div>
+</section>
 
-const cardsEl = document.getElementById('cards');
+<main>
+  <div id="grid" class="grid" aria-live="polite"></div>
+  <div class="note">توجه: کانفیگ‌ها به صورت مستقیم نمایش داده نمی‌شوند — تنها لینک خام فایل‌ها کپی می‌شوند.</div>
+</main>
 
-async function fetchCountries(){ const res = await fetch(RAW_COUNTRIES); const data = await res.json(); return data.filter(f=>f.name.endsWith('.txt')); }
+<footer>
+  ساخته‌شده برای GitHub Pages — فقط فایل‌های <code>*.txt</code> داخل پوشه <code>countries/</code> گرفته می‌شوند.
+</footer>
 
-async function countConfigs(url){ try{ const res = await fetch(url); const txt = await res.text(); return txt.split(/\r?\n/).filter(l=>l.trim()!=="").length; }catch(e){return 0;} }
-
-function getEmoji(name){ const match = name.match(/\p{Regional_Indicator}{2}/u); if(match) return String.fromCodePoint(...Array.from(match[0]).map(c=>c.codePointAt(0))); return ''; }
-
-function createCard(name,count,rawUrl){ const div = document.createElement('div'); div.className='card'; const emoji = name.match(/\p{Emoji}/u)?decodeURIComponent(name.replace('.txt','').replace('%F0%9F%87%A9%F0%9F%87%AA','🇩🇪')):''; div.innerHTML=<div class="info"> <strong>${emoji} ${name}</strong> <span>تعداد کانفیگ‌ها: ${count}</span> </div> <button onclick="copyToClipboard('${rawUrl}')">کپی لینک</button>; return div; }
-
-async function init(){ const countries = await fetchCountries(); for(const c of countries){ const name = decodeURIComponent(c.name.replace('.txt','')); const rawUrl = c.download_url.replace('githubusercontent.com','raw.githubusercontent.com').replace('/refs/heads/main/','/main/'); const count = await countConfigs(rawUrl); cardsEl.appendChild(createCard(name,count,rawUrl)); } }
-
-init(); </script>
-
+  </div>  <div id="toast" class="toast"></div>
+  <script src="script.js"></script>
 </body>
 </html>
