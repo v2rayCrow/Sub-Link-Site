@@ -1,58 +1,33 @@
-<!doctype html>
-
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>V2Ray Links</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2Link</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">
-        <div class="dot">V2</div>
-        <div>
-          <h1>V2Link — کوتاه و مرتب</h1>
-          <p class="lead">لینک‌های سابسکریپشن شما از GitHub — کلیک کن تا لینک کپی شود.</p>
-        </div>
-      </div>
-    </header><section class="top-actions">
-  <button id="btn-sub" class="btn" title="کپی لینک sub.txt">
-    <span>🌐 Sub</span>
-    <span class="kbd">کپی</span>
-  </button>
-  <button id="btn-all" class="btn" title="کپی لینک all.txt">
-    <span>📦 All</span>
-    <span class="kbd">کپی</span>
-  </button>
-  <div style="flex:1"></div>
-  <div style="color:var(--muted);font-size:13px">منبع: <span style="font-weight:600">v2rayCrow/Sub-Link-Output</span></div>
-</section>
+<div class="wrap">
+<header>
+<h1>V2Link</h1>
+<p>لینک‌های سابسکریپشن شما از GitHub — کلیک کن تا کپی شود.</p>
+</header>
 
-<section class="controls">
-  <div class="search">
-    <input id="q" type="text" placeholder="جستجو در کشورها یا فیلتر..." />
-  </div>
-  <div style="display:flex;gap:8px">
-    <button id="sort-alpha" class="btn">مرتب‌سازی الفبایی</button>
-    <button id="reload" class="btn">بارگذاری مجدد</button>
-  </div>
-</section>
+<div class="top-actions">
+<button class="btn" id="btn-sub">🌐 Sub</button>
+<button class="btn" id="btn-all">📦 All</button>
+</div>
 
-<main>
-  <div id="grid" class="grid" aria-live="polite"></div>
-  <div class="note">توجه: کانفیگ‌ها به صورت مستقیم نمایش داده نمی‌شوند — تنها لینک خام فایل‌ها کپی می‌شوند.</div>
-</main>
+<div class="search">
+<input type="text" id="search" placeholder="جستجو در کشورها...">
+</div>
 
-<footer>
-  ساخته‌شده برای GitHub Pages — فقط فایل‌های <code>*.txt</code> داخل پوشه <code>countries/</code> گرفته می‌شوند.
-</footer>
+<div class="grid" id="grid"></div>
 
-  </div>  <div id="toast" class="toast"></div>
-  <script src="script.js"></script>
+</div>
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
