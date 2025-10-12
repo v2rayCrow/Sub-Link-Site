@@ -1,2 +1,79 @@
-const owner = 'v2rayCrow' const repo = 'Sub-Link-Output' const rawBase = https://raw.githubusercontent.com/${owner}/${repo}/main/ const apiBase = https://api.github.com/repos/${owner}/${repo}/contents/ const btnSub = document.getElementById('btn-sub') const btnAll = document.getElementById('btn-all') const grid = document.getElementById('grid') const toastEl = document.getElementById('toast') const q = document.getElementById('q') const reloadBtn = document.getElementById('reload') const sortAlphaBtn = document.getElementById('sort-alpha') const showToast = (msg, ok=true)=>{toastEl.textContent = msg; toastEl.style.display='block'; toastEl.style.borderColor = ok? 'rgba(110,231,183,0.12)' : 'rgba(255,99,99,0.12)'; setTimeout(()=>toastEl.style.display='none',1800)} async function copyText(t){try{await navigator.clipboard.writeText(t); showToast('✅ لینک کپی شد')}catch(e){const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); showToast('✅ لینک کپی شد (fallback)')}catch(err){showToast('⚠️ کپی نشد',false)} ta.remove()}} btnSub.addEventListener('click',()=>copyText(rawBase+'sub.txt')) btnAll.addEventListener('click',()=>copyText(rawBase+'all.txt')) function emojiFlagToCountryCode(flag){if(!flag)return null; const codePoints = Array.from(flag); if(codePoints.length<2)return null; try{return codePoints.map(ch=>String.fromCharCode(ch.codePointAt(0)-0x1F1E6+65)).join('').toLowerCase()}catch(e){return null}} function extractFlagEmoji(name){const m=name.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u); return m?m[0]:null} function flagUrlFromEmoji(emoji){const cc=emojiFlagToCountryCode(emoji); if(!cc)return null; return https://flagcdn.com/w80/${cc}.png} async function loadCountries(){grid.innerHTML=''; try{const res=await fetch(apiBase+'countries'); if(!res.ok)throw new Error('API failed'); const data=await res.json(); let files=data.filter(i=>i.name && i.name.toLowerCase().endsWith('.txt')); const items=files.map(f=>{const nameNoExt=f.name.replace(/.txt$/i,''); const emoji=extractFlagEmoji(nameNoExt); const displayName=nameNoExt.replace(/[\u{1F1E6}-\u{1F1FF}]/gu,'').trim(); const url=rawBase+'countries/'+encodeURIComponent(f.name); return {name:displayName||nameNoExt, emoji, url, filename:f.name}}); window._countries=items; renderGrid(items)}catch(err){showToast('خطا در بارگذاری فهرست کشورها', false); console.error(err)}} function createCard(item){const el=document.createElement('div'); el.className='card'; const flagWrap=document.createElement('div'); flagWrap.className='flag'; if(item.emoji){const img=document.createElement('img'); img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; img.alt=item.name+' flag'; img.src=flagUrlFromEmoji(item.emoji); img.onerror=function(){flagWrap.textContent=item.emoji; flagWrap.style.fontSize='20px'}; flagWrap.appendChild(img)}else{flagWrap.textContent='🏳️'} const meta=document.createElement('div'); meta.className='meta'; const title=document.createElement('div'); title.className='name'; title.textContent=item.name; const sub=document.createElement('div'); sub.className='sub'; sub.textContent=item.filename; meta.appendChild(title); meta.appendChild(sub); const copyBtn=document.createElement('button'); copyBtn.className='copy'; copyBtn.textContent='کپی لینک'; copyBtn.addEventListener('click',()=>copyText(item.url)); el.appendChild(flagWrap); el.appendChild(meta); el.appendChild(copyBtn); return el} function renderGrid(list){grid.innerHTML=''; if(!list||list.length===0){grid.innerHTML='<div style="color:var(--muted)">هیچ کشوری پیدا نشد.</div>'; return} const frag=document.createDocumentFragment(); list.forEach(it=>frag.appendChild(createCard(it))); grid.appendChild(frag)} q.addEventListener('input',()=>{const v=q.value.trim().toLowerCase(); const base=window._countries||[]; const filtered=base.filter(i=>(i.name&&i.name.toLowerCase().includes(v))||(i.filename&&i.filename.toLowerCase().includes(v))); renderGrid(filtered)}) reloadBtn.addEventListener('click', loadCountries) sortAlphaBtn.addEventListener('click',()=>{if(!window._countries)return; const sorted=[...window._countries].sort((a,b)=>a.name.localeCompare(b.name,'en')); window._countries=sorted; renderGrid(sorted)}) loadCountries()
+// لینک‌ها
+const subLink = 'https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt#v2sourceSUB';
+const allLink = 'https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt#v2sourceALL';
 
+// GitHub API
+const owner = 'v2rayCrow';
+const repo = 'Sub-Link-Output';
+const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/countries`;
+const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/main/countries/`;
+
+// Toast
+function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display='block';
+    setTimeout(()=>t.style.display='none',1800);
+}
+
+// کپی به کلیپ‌بورد
+function copyToClipboard(text){
+    navigator.clipboard.writeText(text).then(()=>showToast('✅ لینک کپی شد')).catch(()=>showToast('⚠️ کپی نشد'));
+}
+
+// دکمه‌ها
+document.getElementById('btn-sub').onclick = ()=>copyToClipboard(subLink);
+document.getElementById('btn-all').onclick = ()=>copyToClipboard(allLink);
+
+// ساخت کارت‌ها
+const grid = document.getElementById('grid');
+function renderGrid(list){
+    grid.innerHTML='';
+    list.forEach(c=>{
+        const card = document.createElement('div'); card.className='card';
+        const flag = document.createElement('div'); flag.className='flag';
+        if(c.emoji){
+            const img = document.createElement('img');
+            img.src = `https://flagcdn.com/w80/${Array.from(c.emoji).map(e=>String.fromCharCode(e.codePointAt(0)-0x1F1E6+65)).join('').toLowerCase()}.png`;
+            img.style.width='100%'; img.style.height='100%';
+            img.onerror=()=>flag.textContent=c.emoji;
+            flag.appendChild(img);
+        } else flag.textContent=c.emoji;
+        const meta = document.createElement('div'); meta.className='meta';
+        const title = document.createElement('div'); title.className='name'; title.textContent=c.name;
+        meta.appendChild(title);
+        const copyBtn = document.createElement('button'); copyBtn.className='copy'; copyBtn.textContent='کپی لینک';
+        copyBtn.onclick=()=>copyToClipboard(c.url);
+        card.appendChild(flag); card.appendChild(meta); card.appendChild(copyBtn);
+        grid.appendChild(card);
+    });
+}
+
+// بارگذاری کشورها از GitHub API
+async function loadCountries(){
+    try{
+        const res = await fetch(apiBase);
+        if(!res.ok) throw new Error('API failed');
+        const data = await res.json();
+        const countries = data.filter(f=>f.name.toLowerCase().endsWith('.txt'))
+            .map(f=>{
+                const nameNoExt = f.name.replace(/\.txt$/i,'');
+                const emojiMatch = nameNoExt.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u);
+                const emoji = emojiMatch ? emojiMatch[0] : '🏳️';
+                const displayName = nameNoExt.replace(/[\u{1F1E6}-\u{1F1FF}]/gu,'').trim() || nameNoExt;
+                return {name: displayName, emoji, url: rawBase+encodeURIComponent(f.name), filename: f.name};
+            });
+        window._countries = countries;
+        renderGrid(countries);
+    }catch(e){
+        showToast('خطا در بارگذاری کشورها',false);
+        console.error(e);
+    }
+}
+loadCountries();
+
+// سرچ
+document.getElementById('search').addEventListener('input',(e)=>{
+    const val = e.target.value.toLowerCase();
+    renderGrid((window._countries||[]).filter(c=>c.name.toLowerCase().includes(val)));
+});
