@@ -1,33 +1,41 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V2Link</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2Ray Configs</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
-<header>
-<h1>V2Link</h1>
-<p>لینک‌های سابسکریپشن شما از GitHub — کلیک کن تا کپی شود.</p>
-</header>
+    <header>
+        <h1>V2Ray Configs</h1>
+        <button id="theme-toggle">🌙 / ☀️</button>
+    </header>
 
-<div class="top-actions">
-<button class="btn" id="btn-sub">🌐 Sub</button>
-<button class="btn" id="btn-all">📦 All</button>
-</div>
+    <section class="cards-container">
+        <!-- کارت Sub -->
+        <div class="card special-card" id="sub-card">
+            <div class="card-header">
+                <h2>Sub</h2>
+            </div>
+            <p class="card-description">۳۰ کانفیگ منتخب، سریع و آماده اتصال</p>
+            <button class="copy-btn" data-type="sub">کپی لینک Sub</button>
+        </div>
 
-<div class="search">
-<input type="text" id="search" placeholder="جستجو در کشورها...">
-</div>
+        <!-- کارت All -->
+        <div class="card special-card" id="all-card">
+            <div class="card-header">
+                <h2>All</h2>
+            </div>
+            <p class="card-description">همه کانفیگ‌ها با دسته‌بندی کشورها، همیشه آپدیت</p>
+            <button class="copy-btn" data-type="all">کپی لینک All</button>
+        </div>
+    </section>
 
-<div class="grid" id="grid"></div>
+    <section class="cards-container" id="countries-container">
+        <!-- کارت کشورها توسط JS اضافه می‌شود -->
+    </section>
 
-</div>
-<div id="toast" class="toast"></div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
