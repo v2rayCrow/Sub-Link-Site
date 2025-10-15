@@ -1,41 +1,56 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!doctype html>
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2Ray Configs</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>V2Source — کانفیگ‌ها</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>V2Ray Configs</h1>
-        <button id="theme-toggle">🌙 / ☀️</button>
-    </header>
+  <header class="site-header">
+    <div class="title-wrap">
+      <h1>V2Source — کانفیگ‌ها</h1>
+      <p class="subtitle">کارت‌بندی کشورها · کپی تکی کانفیگ · تم روز/شب</p>
+    </div>
+    <div class="controls">
+      <button id="theme-toggle" class="btn small">تغییر تم</button>
+    </div>
+  </header>
 
-    <section class="cards-container">
-        <!-- کارت Sub -->
-        <div class="card special-card" id="sub-card">
-            <div class="card-header">
-                <h2>Sub</h2>
-            </div>
-            <p class="card-description">۳۰ کانفیگ منتخب، سریع و آماده اتصال</p>
-            <button class="copy-btn" data-type="sub">کپی لینک Sub</button>
+  <main class="main">
+    <section class="top-cards" id="top-cards">
+      <!-- Sub & All cards -->
+      <div class="card special" id="card-sub">
+        <div class="card-head">
+          <h2>Sub</h2>
         </div>
+        <p class="card-desc">۳۰ کانفیگ منتخب، سریع و آماده اتصال</p>
+        <div class="card-actions">
+          <button class="btn copy-sub" data-url="https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt#v2sourceSUB">کپی لینک Sub</button>
+        </div>
+      </div>
 
-        <!-- کارت All -->
-        <div class="card special-card" id="all-card">
-            <div class="card-header">
-                <h2>All</h2>
-            </div>
-            <p class="card-description">همه کانفیگ‌ها با دسته‌بندی کشورها، همیشه آپدیت</p>
-            <button class="copy-btn" data-type="all">کپی لینک All</button>
+      <div class="card special" id="card-all">
+        <div class="card-head">
+          <h2>All</h2>
         </div>
+        <p class="card-desc">همه کانفیگ‌ها با دسته‌بندی کشورها، همیشه آپدیت</p>
+        <div class="card-actions">
+          <button class="btn copy-all" data-url="https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt#v2sourceALL">کپی لینک All</button>
+        </div>
+      </div>
     </section>
 
-    <section class="cards-container" id="countries-container">
-        <!-- کارت کشورها توسط JS اضافه می‌شود -->
+    <section id="countries" class="countries-grid" aria-live="polite">
+      <!-- کارت‌های کشور توسط JS اضافه می‌شود -->
+      <div class="loading">در حال بارگذاری کشورها…</div>
     </section>
+  </main>
 
-    <script src="script.js"></script>
+  <footer class="site-footer">
+    <small>ساخت‌شده برای V2Source — لیست از GitHub</small>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
