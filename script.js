@@ -1,26 +1,24 @@
-// لینک به فایل‌های Raw در GitHub
+// فایل‌های Raw GitHub
 const FILE_URLS = [
     "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt",
     "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt"
 ];
 
 const countriesContainer = document.getElementById("countries");
-let data = {}; // داده نهایی کشورها و کانفیگ‌ها
+let data = {}; 
 
 // تشخیص نوع پروتکل
 function detectProtocol(config) {
     if (config.startsWith("vmess://")) {
-        try {
-            const obj = JSON.parse(atob(config.slice(8)));
-            return `vmess - ${obj.net || "tcp"}`;
-        } catch { return "vmess"; }
+        try { const obj = JSON.parse(atob(config.slice(8))); return `vmess - ${obj.net || "tcp"}`; } 
+        catch { return "vmess"; }
     } else if (config.startsWith("ss://")) return "Shadowsocks";
     else if (config.startsWith("vless://")) return "vless";
     else if (config.startsWith("trojan://")) return "trojan";
     else return "Unknown";
 }
 
-// دریافت فایل از GitHub و پردازش
+// بارگذاری فایل‌ها
 async function loadConfigs() {
     for (const url of FILE_URLS) {
         try {
@@ -29,10 +27,13 @@ async function loadConfigs() {
             const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
 
             lines.forEach(line => {
-                let country = "Unknown";
                 let cfg = line.trim();
 
-                // استخراج کشور از پایان کانفیگ (اگر هست)
+                // حذف خطوط اضافی (Provider یا آخرین آپدیت)
+                if (cfg.includes("Provider") || cfg.includes("آخرین آپدیت") || cfg === "") return;
+
+                // استخراج کشور از انتهای خط
+                let country = "Unknown";
                 const hashIdx = cfg.lastIndexOf("#");
                 if (hashIdx !== -1) {
                     country = cfg.slice(hashIdx + 1).trim();
@@ -50,7 +51,7 @@ async function loadConfigs() {
     buildCountryCards();
 }
 
-// ساخت کارت‌های کشور روی صفحه اصلی
+// ساخت کارت‌های کشور
 function buildCountryCards() {
     for (const country in data) {
         const card = document.createElement("div");
