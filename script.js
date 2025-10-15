@@ -1,62 +1,75 @@
-// نمونه داده‌ها، می‌توانید از فایل sub.txt یا all.txt بخوانید
-const data = {
-    "USA": {
-        "flag": "🇺🇸",
-        "sub": "https://example.com/usa_sub.txt",
-        "configs": [
-            "vmess://ew0KICAidHlwZSI6ICJ2bWVzcyIsDQogICJuZXQiOiAid3MiLA0KICAiaG9zdCI6ICJleGFtcGxlLmNvbSIsDQogICJwb3J0IjogIjQ0MyIsDQogICJpZCI6ICJhYmNkLWVmZ2gtMTIzNCIsDQogICJuYW1lIjogIlVzYS1UZXN0IiwNCiAgImFkZCI6ICJleGFtcGxlLmNvbSIsDQogICJ0bHMiOiAiIn0="
-        ]
-    },
-    "Finland": {
-        "flag": "🇫🇮",
-        "sub": "https://example.com/finland_sub.txt",
-        "configs": [
-            "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmYWtlcGFzc0BleGFtcGxlLmNvbQ=="
-        ]
-    }
-};
+// لینک به فایل‌های Raw در GitHub
+const FILE_URLS = [
+    "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/sub.txt",
+    "https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt"
+];
 
-// صفحه اصلی
 const countriesContainer = document.getElementById("countries");
+let data = {}; // داده نهایی کشورها و کانفیگ‌ها
 
+// تشخیص نوع پروتکل
 function detectProtocol(config) {
     if (config.startsWith("vmess://")) {
         try {
-            const decoded = atob(config.slice(8));
-            const obj = JSON.parse(decoded);
+            const obj = JSON.parse(atob(config.slice(8)));
             return `vmess - ${obj.net || "tcp"}`;
-        } catch (e) {
-            return "vmess";
-        }
-    } else if (config.startsWith("ss://")) {
-        return "Shadowsocks";
-    } else if (config.startsWith("vless://")) {
-        return "vless";
-    } else if (config.startsWith("trojan://")) {
-        return "trojan";
-    } else {
-        return "Unknown";
-    }
+        } catch { return "vmess"; }
+    } else if (config.startsWith("ss://")) return "Shadowsocks";
+    else if (config.startsWith("vless://")) return "vless";
+    else if (config.startsWith("trojan://")) return "trojan";
+    else return "Unknown";
 }
 
-// ساخت کارت‌های کشور
-for (const country in data) {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-        <span class="flag">${data[country].flag}</span>
-        <span class="name">${country}</span>
-        <span class="count">${data[country].configs.length} کانفیگ</span>
-    `;
-    card.addEventListener("click", () => openCountryPage(country));
-    countriesContainer.appendChild(card);
+// دریافت فایل از GitHub و پردازش
+async function loadConfigs() {
+    for (const url of FILE_URLS) {
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+
+            lines.forEach(line => {
+                let country = "Unknown";
+                let cfg = line.trim();
+
+                // استخراج کشور از پایان کانفیگ (اگر هست)
+                const hashIdx = cfg.lastIndexOf("#");
+                if (hashIdx !== -1) {
+                    country = cfg.slice(hashIdx + 1).trim();
+                    cfg = cfg.slice(0, hashIdx).trim();
+                }
+
+                if (!data[country]) data[country] = { flag: "", configs: [] };
+                data[country].configs.push(line.trim());
+            });
+        } catch (e) {
+            console.error("خطا در خواندن فایل:", url, e);
+        }
+    }
+
+    buildCountryCards();
+}
+
+// ساخت کارت‌های کشور روی صفحه اصلی
+function buildCountryCards() {
+    for (const country in data) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <span class="flag">${data[country].flag || ""}</span>
+            <span class="name">${country}</span>
+            <span class="count">${data[country].configs.length} کانفیگ</span>
+        `;
+        card.addEventListener("click", () => openCountryPage(country));
+        countriesContainer.appendChild(card);
+    }
 }
 
 // باز کردن صفحه جزئیات کشور
 function openCountryPage(country) {
     document.body.innerHTML = `
         <header>
-            <h1>${data[country].flag} ${country}</h1>
+            <h1>${data[country].flag || ""} ${country}</h1>
         </header>
         <main class="country-page">
             <button id="copyAll">کپی همه کانفیگ‌ها و لینک سابسکریپشن</button>
@@ -80,17 +93,14 @@ function openCountryPage(country) {
         configsContainer.appendChild(card);
     });
 
-    document.getElementById("copyAll").addEventListener("click", () => {
-        const allConfigs = configs.join("\n");
-        copyText(allConfigs);
-    });
+    document.getElementById("copyAll").addEventListener("click", () => copyText(configs.join("\n")));
 }
 
 // تابع کپی
 function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert("کپی شد!");
-    }).catch(err => {
-        console.error("کپی انجام نشد: ", err);
-    });
+    navigator.clipboard.writeText(text).then(() => alert("کپی شد!"))
+    .catch(err => console.error("کپی انجام نشد: ", err));
 }
+
+// اجرا
+loadConfigs();
