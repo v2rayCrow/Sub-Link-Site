@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="نمایش کانفیگ‌های فانتزی V2Ray با طراحی زیبا و جستجوی پیشرفته">
-  <meta name="keywords" content="V2Ray, کانفیگ, VPN, پرچم کشورها, فانتزی">
-  <title>کانفیگ‌های فانتزی V2Ray</title>
+  <meta name="description" content="کانفیگ رایگان">
+  <meta name="keywords" content="V2Ray, کانفیگ, VPN, فانتزی, شیک">
+  <title>کانفیگ‌های رایگان v2ray</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-day: #e6f3ff;
-      --bg-night: #1a1a3d;
-      --text-day: #1a1a1a;
-      --text-night: #f0f0f0;
-      --primary-color: #ff6f61;
-      --secondary-color: #ffd700;
-      --card-shadow: rgba(0, 0, 0, 0.2);
-      --card-hover-shadow: rgba(0, 0, 0, 0.3);
-      --gradient-overlay: linear-gradient(to right, rgba(0, 0, 0, 0.5), transparent);
+      --bg-day: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+      --bg-night: linear-gradient(135deg, #1e293b, #2d3748);
+      --text-day: #1f2937;
+      --text-night: #e5e7eb;
+      --primary-color: #6366f1;
+      --secondary-color: #f59e0b;
+      --card-shadow: rgba(0, 0, 0, 0.15);
+      --card-hover-shadow: rgba(0, 0, 0, 0.25);
+      --config-bg: linear-gradient(45deg, #e0e7ff, #f3e8ff);
+      --config-bg-night: linear-gradient(45deg, #312e81, #4c1d95);
+      --colors: #6366f1, #f59e0b, #10b981, #ec4899, #06b6d4, #a78bfa;
     }
 
     * {
@@ -30,7 +32,7 @@
       padding: 20px;
       background: var(--bg-day);
       color: var(--text-day);
-      transition: background 0.5s ease, color 0.5s ease;
+      transition: all 0.5s ease;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -56,14 +58,23 @@
       -webkit-background-clip: text;
       color: transparent;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
     }
 
     #lastUpdate {
       font-size: 0.9rem;
-      opacity: 0.8;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    /* کنترل‌ها */
     .controls {
       display: flex;
       gap: 10px;
@@ -76,85 +87,109 @@
       padding: 12px;
       border-radius: 20px;
       border: 1px solid #ccc;
-      background: rgba(255, 255, 255, 0.9);
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(243, 244, 246, 0.95));
       text-align: right;
       font-size: 1rem;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
+    }
+
+    body.night input[type="search"] {
+      background: linear-gradient(45deg, rgba(55, 65, 81, 0.95), rgba(75, 85, 99, 0.95));
+      border-color: #4b5563;
+    }
+
+    input[type="search"]:hover {
+      transform: scale(1.02);
     }
 
     input[type="search"]:focus {
       border-color: var(--primary-color);
-      box-shadow: 0 0 8px rgba(255, 111, 97, 0.3);
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
       outline: none;
+      transform: scale(1.05);
     }
 
     button {
       padding: 10px 16px;
       border: none;
       border-radius: 20px;
-      background: var(--primary-color);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       color: #fff;
       cursor: pointer;
       font-size: 0.9rem;
-      transition: transform 0.2s ease, background 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     button:hover {
       transform: translateY(-2px);
-      background: var(--secondary-color);
+      opacity: 0.9;
     }
 
-    /* کارت کشور */
     .country-card {
-      padding: 20px;
+      padding: 15px;
       border-radius: 25px;
       cursor: pointer;
-      background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(243, 244, 246, 0.9));
       box-shadow: 0 8px 25px var(--card-shadow);
       margin-bottom: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      animation: slideIn 0.5s ease-out;
     }
 
-    .country-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: left center;
-      opacity: 0.3;
-      z-index: -1;
-      transition: opacity 0.3s ease;
+    body.night .country-card {
+      background: linear-gradient(45deg, rgba(55, 65, 81, 0.9), rgba(75, 85, 99, 0.9));
     }
 
     .country-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 30px var(--card-hover-shadow);
+      opacity: 0.95;
     }
 
-    .country-card:hover::before {
-      opacity: 0.5;
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .country-name {
       font-weight: 600;
       font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      flex: 1;
+      text-align: center;
       color: var(--text-day);
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
     }
 
     body.night .country-name {
       color: var(--text-night);
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
     }
 
-    /* لیست کانفیگ‌ها */
+    .country-name:hover {
+      transform: scale(1.05);
+    }
+
+    .config-section {
+      padding: 20px;
+      border-radius: 25px;
+      background: var(--config-bg);
+      box-shadow: 0 8px 25px var(--card-shadow);
+      margin-bottom: 20px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    body.night .config-section {
+      background: var(--config-bg-night);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     .config-list {
       margin-top: 15px;
       display: flex;
@@ -163,18 +198,19 @@
     }
 
     .config-card {
-      background: rgba(0, 0, 0, 0.6);
+      background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(75, 85, 99, 0.5));
       padding: 15px;
       border-radius: 15px;
       font-family: monospace;
       word-break: break-all;
       color: #fff;
       white-space: pre-wrap;
-      transition: background 0.3s ease, transform 0.2s ease;
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease-out;
     }
 
     .config-card:hover {
-      background: rgba(0, 0, 0, 0.75);
+      background: linear-gradient(45deg, rgba(0, 0, 0, 0.65), rgba(75, 85, 99, 0.65));
       transform: translateX(5px);
     }
 
@@ -184,7 +220,6 @@
       font-size: 0.85rem;
     }
 
-    /* دکمه‌ها */
     .actions {
       margin-top: 10px;
       display: flex;
@@ -194,44 +229,50 @@
     .small {
       padding: 8px 14px;
       border-radius: 10px;
-      background: var(--primary-color);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       color: #fff;
       font-size: 0.85rem;
+      transition: all 0.3s ease;
     }
 
     .small:hover {
-      background: var(--secondary-color);
+      transform: scale(1.1);
     }
 
     .show-more {
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      background: linear-gradient(45deg, #10b981, #ec4899);
       color: #fff;
       border-radius: 15px;
       padding: 8px 20px;
       align-self: center;
       margin-top: 10px;
+      transition: all 0.3s ease;
     }
 
     .show-more:hover {
-      opacity: 0.9;
       transform: translateY(-2px);
     }
 
-    /* دکمه شب/روز */
     #themeSwitch {
       width: 60px;
       height: 30px;
-      background: linear-gradient(45deg, #87ceeb, #00b7eb);
+      background: linear-gradient(45deg, #93c5fd, #3b82f6);
       border-radius: 15px;
       cursor: pointer;
       display: flex;
       align-items: center;
       padding: 3px;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     body.night #themeSwitch {
-      background: linear-gradient(45deg, #1c2f4a, #3b5998);
+      background: linear-gradient(45deg, #4c1d95, #7c3aed);
+    }
+
+    #themeSwitch:hover {
+      transform: scale(1.1);
     }
 
     #slider {
@@ -239,23 +280,24 @@
       height: 24px;
       background: #fff;
       border-radius: 50%;
-      transition: transform 0.3s ease;
+      transition: transform 0.5s ease-in-out;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      position: relative;
     }
 
     body.night #slider {
-      transform: translateX(32px);
+      transform: translateX(26px);
     }
 
     #slider img {
       width: 18px;
       height: 18px;
+      transition: opacity 0.3s ease;
     }
 
-    /* فوتر ثابت */
     .fixed-footer {
       position: fixed;
       bottom: 0;
@@ -264,14 +306,14 @@
       display: flex;
       justify-content: center;
       gap: 20px;
-      background: rgba(255, 255, 255, 0.95);
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.95), rgba(243, 244, 246, 0.95));
       padding: 10px 0;
       backdrop-filter: blur(10px);
       z-index: 1000;
     }
 
     body.night .fixed-footer {
-      background: rgba(30, 30, 60, 0.95);
+      background: linear-gradient(45deg, rgba(55, 65, 81, 0.95), rgba(75, 85, 99, 0.95));
     }
 
     .fixed-footer a {
@@ -283,7 +325,7 @@
       font-weight: 600;
       padding: 8px 15px;
       border-radius: 10px;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     body.night .fixed-footer a {
@@ -291,25 +333,40 @@
     }
 
     .fixed-footer a:hover {
-      background: var(--primary-color);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
       color: #fff;
+      transform: scale(1.1);
     }
 
-    /* واکنش‌گرایی */
     @media (max-width: 600px) {
       header h1 { font-size: 1.5rem; }
       .controls { flex-direction: column; }
-      .country-card { padding: 15px; }
+      .country-card { padding: 10px; }
       .country-name { font-size: 1rem; }
+    }
+
+    #status.loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--primary-color);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body class="day">
   <header>
-    <h1>کانفیگ‌های فانتزی V2Ray</h1>
+    <h1>کانفیگ های رایگان v2ray</h1>
     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
       <div id="lastUpdate">آخرین آپدیت: در حال دریافت...</div>
-      <div id="themeSwitch"><div id="slider"><img id="sliderIcon" src="https://img.icons8.com/emoji/48/sun-emoji.png" alt="تم روشن"></div></div>
+      <div id="themeSwitch"><div id="slider"><img id="sliderIcon" src="https://img.icons8.com/fluency/48/sun.png" alt="تم روشن"></div></div>
     </div>
   </header>
   <main>
@@ -330,10 +387,11 @@
     </a>
   </footer>
   <script>
-    const RAW_ALL = 'https://cors.bridged.cc/https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt';
+    const RAW_ALL = 'https://api.allorigins.win/raw?url=https://raw.githubusercontent.com/v2rayCrow/Sub-Link-Output/main/all.txt';
     let countryGroups = {};
     let configsData = [];
     let nightMode = false;
+    let selectedCountry = null;
 
     const countryListEl = document.getElementById('countryList');
     const statusEl = document.getElementById('status');
@@ -342,17 +400,18 @@
     const themeSwitch = document.getElementById('themeSwitch');
     const slider = document.getElementById('slider');
     const sliderIcon = document.getElementById('sliderIcon');
+    const colors = ['#6366f1', '#f59e0b', '#10b981', '#ec4899', '#06b6d4', '#a78bfa'];
 
     function toggleTheme() {
       nightMode = !nightMode;
       document.body.className = nightMode ? 'night' : 'day';
-      sliderIcon.src = nightMode ? 'https://img.icons8.com/emoji/48/moon-emoji.png' : 'https://img.icons8.com/emoji/48/sun-emoji.png';
+      sliderIcon.src = nightMode ? 'https://img.icons8.com/fluency/48/moon.png' : 'https://img.icons8.com/fluency/48/sun.png';
       sliderIcon.alt = nightMode ? 'تم تاریک' : 'تم روشن';
-      renderCountries(qEl.value.trim().toLowerCase());
+      renderCountries(qEl.value ? qEl.value.trim().toLowerCase() : '');
     }
 
     themeSwitch.onclick = toggleTheme;
-    qEl.oninput = () => renderCountries(qEl.value.trim().toLowerCase());
+    qEl.oninput = () => renderCountries(qEl.value ? qEl.value.trim().toLowerCase() : '');
     document.getElementById('refresh').onclick = loadConfigs;
 
     async function fetchText(url, retries = 3) {
@@ -383,19 +442,23 @@
 
     function processLine(line) {
       line = line.trim();
-      if (!line || line.startsWith('Provider') || line.startsWith('نامشخص') || line.startsWith('آخرین آپدیت')) return null;
+      if (!line || line.includes('آخرین%20آپدیت') || line.includes('Provider❤️@V2Source')) return null;
 
       let remarkMatch = line.match(/#(.+)$/);
-      let remark = remarkMatch ? remarkMatch[1] : '';
+      let remark = remarkMatch ? remarkMatch[1].trim() : 'نامشخص';
+      let country = remark.split(' ')[0]?.trim() || 'نامشخص';
+      country = decodeURIComponent(country).replace(/�.*$/, '');
+
       if (line.startsWith('vmess://')) {
         const decoded = decodeVMess(line);
         if (!decoded) return null;
         line = line.slice(0, 8) + btoa(decoded);
       }
-      return { raw: line, remark };
+      return { raw: line, remark, country };
     }
 
     async function loadConfigs() {
+      statusEl.classList.add('loading');
       statusEl.textContent = 'در حال دریافت کانفیگ‌ها...';
       try {
         const cached = localStorage.getItem('configs');
@@ -404,34 +467,38 @@
           renderCountries();
         }
         const text = await fetchText(RAW_ALL);
-        const lines = text.split('\n');
+        const lines = text.split('\n').filter(line => line.trim());
         configsData = [];
         countryGroups = {};
+
+        let updateTime = 'نامشخص';
+        const updateLine = lines.find(l => l.includes('آخرین%20آپدیت'));
+        if (updateLine) {
+          const updateMatch = updateLine.match(/آخرین%20آپدیت.*?:(.+)$/);
+          updateTime = updateMatch ? updateMatch[1].trim() : 'نامشخص';
+        }
+        lastUpdateEl.textContent = `آخرین آپدیت: ${updateTime}`;
+
         lines.forEach(l => {
           const processed = processLine(l);
           if (processed) {
             configsData.push(processed);
-            let country = processed.remark.split('')[0].trim() || 'نامشخص';
+            let country = processed.country;
             if (!countryGroups[country]) countryGroups[country] = [];
             countryGroups[country].push(processed);
           }
         });
 
         delete countryGroups['نامشخص'];
-        delete countryGroups['Provider❤️@V2Source'];
-
-        const firstLine = lines.find(l => l.startsWith('vless://'));
-        if (firstLine) {
-          const updateMatch = firstLine.match(/#%D8%A2%D8%AE%D8%B1%DB%8C%D9%86.+؟(.*)/);
-          lastUpdateEl.textContent = updateMatch ? `آخرین آپدیت: ${updateMatch[1]}` : 'آخرین آپدیت: نامشخص';
-        }
 
         localStorage.setItem('configs', JSON.stringify(configsData));
         renderCountries();
         statusEl.textContent = `تعداد کشورها: ${Object.keys(countryGroups).length}`;
       } catch (e) {
-        console.error(e);
+        console.error('Error loading configs:', e);
         statusEl.textContent = 'خطا در دریافت کانفیگ‌ها! از داده‌های کش استفاده شد.';
+      } finally {
+        statusEl.classList.remove('loading');
       }
     }
 
@@ -446,66 +513,97 @@
 
     function renderCountries(filter = '') {
       countryListEl.innerHTML = '';
-      Object.keys(countryGroups).sort((a, b) => countryGroups[b].length - countryGroups[a].length).forEach(country => {
+      if (selectedCountry && countryGroups[selectedCountry]) {
+        renderConfigs(selectedCountry);
+        return;
+      }
+
+      Object.keys(countryGroups).sort().forEach((country, index) => {
         if (filter && !country.toLowerCase().includes(filter) && !countryGroups[country].some(cfg => cfg.raw.toLowerCase().includes(filter))) return;
 
         const card = document.createElement('div');
         card.className = 'country-card';
-        card.style.backgroundImage = `var(--gradient-overlay), url('https://flagcdn.com/w320/${country.slice(0, 2).toLowerCase()}.png')`;
+        card.style.background = `linear-gradient(45deg, ${colors[index % colors.length]}, ${colors[(index + 1) % colors.length]})`;
+        card.onclick = () => {
+          selectedCountry = country;
+          renderCountries(filter);
+        };
 
         const nameEl = document.createElement('div');
         nameEl.className = 'country-name';
-        nameEl.innerHTML = `<span style="background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8)); padding: 5px 10px; border-radius: 10px;">${country} (${countryGroups[country].length})</span>`;
+        nameEl.innerHTML = `<span>${country} (${countryGroups[country].length})</span>`;
         card.appendChild(nameEl);
 
-        const configList = document.createElement('div');
-        configList.className = 'config-list';
-
-        let configs = countryGroups[country];
-        let visibleCount = 0;
-
-        function renderNext(n = 5) {
-          for (let i = visibleCount; i < Math.min(visibleCount + n, configs.length); i++) {
-            const cfg = configs[i];
-            const cfgCard = document.createElement('div');
-            cfgCard.className = 'config-card';
-            const preview = document.createElement('div');
-            preview.className = 'config-preview';
-            preview.textContent = cfg.raw.split('\n').slice(0, 2).join('\n') + (cfg.raw.split('\n').length > 2 ? '\n...' : '');
-            cfgCard.appendChild(preview);
-
-            const actions = document.createElement('div');
-            actions.className = 'actions';
-            const copyBtn = document.createElement('button');
-            copyBtn.className = 'small';
-            copyBtn.textContent = 'کپی';
-            copyBtn.onclick = () => copyToClipboard(cfg.raw);
-            actions.appendChild(copyBtn);
-            configList.appendChild(cfgCard);
-          }
-          visibleCount += n;
-          showMoreBtn.style.display = visibleCount < configs.length ? 'block' : 'none';
-        }
-
-        const showMoreBtn = document.createElement('button');
-        showMoreBtn.className = 'show-more';
-        showMoreBtn.textContent = 'نمایش بیشتر';
-        showMoreBtn.onclick = () => renderNext(5);
-
-        const copyAllBtn = document.createElement('button');
-        copyAllBtn.className = 'small';
-        copyAllBtn.textContent = 'کپی همه';
-        copyAllBtn.onclick = () => copyAllConfigs(country);
-        nameEl.appendChild(copyAllBtn);
-
-        renderNext(5);
-        card.appendChild(configList);
-        if (visibleCount < configs.length) card.appendChild(showMoreBtn);
         countryListEl.appendChild(card);
       });
     }
 
-    // لود اولیه
+    function renderConfigs(country) {
+      countryListEl.innerHTML = '';
+      const backBtn = document.createElement('button');
+      backBtn.className = 'small';
+      backBtn.textContent = 'بازگشت به لیست کشورها';
+      backBtn.onclick = () => {
+        selectedCountry = null;
+        renderCountries(qEl.value ? qEl.value.trim().toLowerCase() : '');
+      };
+      countryListEl.appendChild(backBtn);
+
+      const section = document.createElement('div');
+      section.className = 'config-section';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'country-name';
+      nameEl.innerHTML = `<span>${country} (${countryGroups[country].length})</span>`;
+      const copyAllBtn = document.createElement('button');
+      copyAllBtn.className = 'small';
+      copyAllBtn.textContent = 'کپی همه';
+      copyAllBtn.onclick = () => copyAllConfigs(country);
+      nameEl.appendChild(copyAllBtn);
+      section.appendChild(nameEl);
+
+      const configList = document.createElement('div');
+      configList.className = 'config-list';
+
+      let configs = countryGroups[country];
+      let visibleCount = 0;
+
+      function renderNext(n = 5) {
+        for (let i = visibleCount; i < Math.min(visibleCount + n, configs.length); i++) {
+          const cfg = configs[i];
+          const cfgCard = document.createElement('div');
+          cfgCard.className = 'config-card';
+          const preview = document.createElement('div');
+          preview.className = 'config-preview';
+          preview.textContent = cfg.raw.split('\n').slice(0, 2).join('\n') + (cfg.raw.split('\n').length > 2 ? '\n...' : '');
+          cfgCard.appendChild(preview);
+
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'small';
+          copyBtn.textContent = 'کپی';
+          copyBtn.onclick = () => copyToClipboard(cfg.raw);
+          actions.appendChild(copyBtn);
+          cfgCard.appendChild(actions);
+          configList.appendChild(cfgCard);
+        }
+        visibleCount += n;
+        showMoreBtn.style.display = visibleCount < configs.length ? 'block' : 'none';
+      }
+
+      const showMoreBtn = document.createElement('button');
+      showMoreBtn.className = 'show-more';
+      showMoreBtn.textContent = 'نمایش بیشتر';
+      showMoreBtn.onclick = () => renderNext(5);
+
+      renderNext(5);
+      section.appendChild(configList);
+      if (visibleCount < configs.length) section.appendChild(showMoreBtn);
+      countryListEl.appendChild(section);
+    }
+
+
     loadConfigs();
   </script>
 </body>
